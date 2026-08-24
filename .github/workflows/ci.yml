@@ -1,0 +1,40 @@
+name: CI Pipeline - AgroSmart Monitor
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el codigo (checkout)
+        uses: actions/checkout@v4
+
+      - name: Preparar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Ejecutar pruebas automatizadas
+        run: mvn -B test
+
+      - name: Compilar y empaquetar (build)
+        run: mvn -B package -DskipTests
+
+      - name: Desplegar (simulado)
+        run: |
+          mkdir -p staging
+          cp target/*.jar staging/
+          echo "Despliegue exitoso"
+          ls -R staging
+
+      - name: Publicar el .jar generado como artefacto de esta ejecucion
+        uses: actions/upload-artifact@v4
+        with:
+          name: agrosmart-monitor-jar
+          path: staging/*.jar
