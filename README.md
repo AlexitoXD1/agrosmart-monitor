@@ -1,68 +1,77 @@
-# AgroSmart Monitor (versión demo Java)
+# AgroSmart Monitor (demostración en Java)
 
-Proyecto mínimo en **Java + Maven** para practicar y **demostrar en vivo** un pipeline de **CI/CD con GitHub Actions**, inspirado en el caso "AgroSmart Monitor" (monitoreo de cadena de frío agrícola) de la guía del Proyecto Final del curso.
+Proyecto demostrativo desarrollado con **Java y Maven** para implementar un pipeline de **CI/CD (Continuous Integration / Continuous Delivery - Integración Continua / Entrega Continua)** mediante **GitHub Actions**. El caso se basa en AgroSmart Monitor, una plataforma de monitoreo de la cadena de frío agrícola incluida en la guía del Proyecto Final del curso.
 
-La parte de **IoT está simulada**: no hace falta ningún sensor físico. `SensorSimulator` genera lecturas de temperatura y humedad aleatorias dentro de rangos realistas, tal como lo hacía `iot_simulator.py` en la guía original (aquí portado a Java).
+El componente de **IoT (Internet of Things - Internet de las Cosas)** se encuentra simulado, por lo que no se requiere un sensor físico. La clase `SensorSimulator` genera lecturas aleatorias de temperatura y humedad dentro de rangos establecidos e implementa en Java una función equivalente a `iot_simulator.py` de la guía de referencia.
 
 ## ¿Qué hace el proyecto?
 
-1. Simula 5 lecturas de una cámara de frío (temperatura entre 2°C y 12°C, humedad entre 45% y 90%).
-2. Clasifica cada lectura según la regla de negocio (`TemperatureClassifier`):
-   - `NORMAL`: temperatura ≤ 8°C
-   - `WARNING`: temperatura > 8°C y ≤ 10°C
-   - `ALERT`: temperatura > 10°C
-3. Si una lectura es `ALERT`, genera automáticamente un reporte de texto en la carpeta `reports/` (equivalente al `automation.py` de la guía).
-4. Todo esto corre también dentro de un **pipeline de GitHub Actions** (`.github/workflows/ci.yml`) cada vez que se hace `push` o `pull request` a `main`:
-   - Descarga el código (checkout)
-   - Prepara Java 17
-   - Ejecuta las pruebas automatizadas (`mvn test`)
-   - Compila y empaqueta (`mvn package`)
-   - "Despliega" de forma simulada (copia el `.jar` a una carpeta `staging/`)
-   - Publica el `.jar` generado como artefacto descargable de esa ejecución
+1. Simula cinco lecturas de una cámara de frío, con temperaturas entre 2 °C y 12 °C y niveles de humedad entre 45 % y 90 %.
+2. Clasifica cada lectura mediante la regla de negocio implementada en `TemperatureClassifier`:
+
+   * `NORMAL`: temperatura menor o igual que 8 °C.
+   * `WARNING`: temperatura mayor que 8 °C y menor o igual que 10 °C.
+   * `ALERT`: temperatura mayor que 10 °C.
+3. Cuando una lectura obtiene el estado `ALERT`, genera automáticamente un reporte de texto en la carpeta `reports/`. Esta función representa una automatización básica de **RPA (Robotic Process Automation - Automatización Robótica de Procesos)**.
+4. Integra un pipeline de GitHub Actions definido en `.github/workflows/ci.yml`, que se activa mediante un `push` o un `pull request` sobre la rama `main`:
+
+   * Descarga el código del repositorio mediante `checkout`.
+   * Prepara el entorno de Java 17.
+   * Ejecuta las pruebas automatizadas con `mvn test`.
+   * Compila y empaqueta la aplicación con `mvn package`.
+   * Realiza un despliegue simulado copiando el archivo `.jar` a la carpeta `staging/`.
+   * Publica el archivo `.jar` como artefacto descargable de la ejecución.
 
 ## Estructura del proyecto
 
-```
+```text
 agrosmart-monitor/
 ├── .github/workflows/ci.yml        <- Pipeline de CI/CD
 ├── pom.xml                         <- Configuración de Maven
 ├── src/main/java/com/agrosmart/
-│   ├── Main.java                   <- Punto de entrada (corre la simulación)
+│   ├── Main.java                   <- Punto de entrada de la aplicación
 │   ├── TemperatureReading.java     <- Modelo de una lectura
-│   ├── SensorSimulator.java        <- Simula el IoT (sin hardware real)
-│   ├── SensorStatus.java           <- Enum NORMAL / WARNING / ALERT
-│   ├── TemperatureClassifier.java  <- Regla de negocio (la lógica crítica)
-│   └── AlertReportGenerator.java   <- Genera el reporte de alerta (RPA)
+│   ├── SensorSimulator.java        <- Simulación del componente IoT
+│   ├── SensorStatus.java           <- Estados NORMAL, WARNING y ALERT
+│   ├── TemperatureClassifier.java  <- Regla de negocio
+│   └── AlertReportGenerator.java   <- Generación automática de reportes
 └── src/test/java/com/agrosmart/
     ├── TemperatureClassifierTest.java  <- Pruebas de la regla de negocio
     └── SensorSimulatorTest.java        <- Pruebas del simulador
 ```
 
-## Cómo correrlo en tu PC (local)
+## Ejecución local del proyecto
 
-Requisitos: **Java 17+** y **Maven** instalados.
+### Requisitos
+
+* Java 17 o una versión posterior.
+* Maven instalado.
+
+Para comprobar las versiones instaladas:
 
 ```bash
 java -version
 mvn -version
 ```
 
-Dentro de la carpeta del proyecto:
+Dentro de la carpeta principal del proyecto se pueden ejecutar los siguientes comandos:
 
 ```bash
 # Ejecutar las pruebas automatizadas
 mvn test
 
-# Compilar y generar el .jar
+# Compilar y generar el archivo JAR
 mvn package
 
 # Ejecutar la aplicación
 java -jar target/agrosmart-monitor.jar
 ```
 
-Vas a ver algo como:
+`JAR` significa **Java Archive (Archivo Java)** y corresponde al artefacto ejecutable generado durante la construcción del proyecto.
 
-```
+La ejecución mostrará una salida similar a la siguiente:
+
+```text
 === AgroSmart Monitor - monitoreo de camara de frio (simulado) ===
 Lectura 1/5 -> [2026-08-23 10:00:00] Temp: 6.4°C | Humedad: 61.2% | Estado: NORMAL
 Lectura 2/5 -> [2026-08-23 10:00:00] Temp: 11.3°C | Humedad: 58.9% | Estado: ALERT
@@ -71,22 +80,24 @@ Lectura 2/5 -> [2026-08-23 10:00:00] Temp: 11.3°C | Humedad: 58.9% | Estado: AL
 === Fin de la simulacion ===
 ```
 
-## Ideas para modificar en vivo durante la clase
+## Actividades prácticas durante la clase
 
-Estas son propuestas pequeñas y seguras para que, en cada sesión, cambies algo, hagas `git push`, y los estudiantes vean el pipeline correr de nuevo en la pestaña **Actions** de GitHub:
+En cada sesión se implementará una modificación, se realizará un `git push` y se observará la nueva ejecución del pipeline en la pestaña **Actions** de GitHub:
 
-1. **Cambiar un umbral de la regla de negocio** en `TemperatureClassifier.java` (por ejemplo, que `WARNING` empiece en 7°C en vez de 8°C) y mostrar cómo las pruebas de `TemperatureClassifierTest.java` siguen pasando (o fallan, si rompes el límite a propósito, para mostrar cómo el pipeline detiene el proceso).
-2. **Agregar una prueba nueva** que falle a propósito, hacer `push`, y mostrar en vivo cómo el job "Ejecutar pruebas automatizadas" se pone en rojo y el pipeline no llega a empaquetar ni desplegar.
-3. **Aumentar `READINGS_TO_SIMULATE`** en `Main.java` (por ejemplo de 5 a 10) para simular un ciclo de monitoreo más largo.
-4. **Cambiar el rango de temperaturas simuladas** en `SensorSimulator.java` para forzar más alertas y ver más reportes generados.
-5. **Agregar un paso nuevo al pipeline** en `.github/workflows/ci.yml` (por ejemplo, un paso que imprima la fecha del despliegue) para mostrar que el YAML también se versiona y se puede modificar como cualquier otro archivo.
+1. **Modificar un umbral de la regla de negocio** en `TemperatureClassifier.java`. Por ejemplo, establecer que `WARNING` comience en 7 °C en lugar de 8 °C y comprobar el comportamiento de las pruebas definidas en `TemperatureClassifierTest.java`.
+2. **Incorporar temporalmente una prueba que falle**, realizar un `git push` y observar cómo la etapa de pruebas automatizadas cambia a estado fallido e impide continuar con el empaquetado y el despliegue.
+3. **Aumentar el valor de `READINGS_TO_SIMULATE`** en `Main.java`, por ejemplo, de 5 a 10, para simular un ciclo de monitoreo más largo.
+4. **Modificar el rango de temperaturas simuladas** en `SensorSimulator.java` para generar una mayor cantidad de alertas y reportes.
+5. **Agregar un paso al pipeline** en `.github/workflows/ci.yml`, como el registro de la fecha del despliegue, para comprobar que el archivo YAML también se encuentra versionado.
 
-## Próximos pasos naturales (si quieres ir más allá)
+## Posibles extensiones del proyecto
 
-- Conectar un sensor real (o un microcontrolador simulado con Docker) reemplazando `SensorSimulator` por una fuente de datos real — esto conecta directamente con la Sesión 3 del curso (IoT).
-- Agregar un paso de "despliegue real" (por ejemplo a un servidor o contenedor) en vez del despliegue simulado actual.
-- Agregar un badge de estado del pipeline en este README una vez que el repositorio esté en GitHub.
+* Conectar un sensor real o un microcontrolador simulado mediante Docker, reemplazando `SensorSimulator` por una fuente de datos externa.
+* Incorporar un despliegue real hacia un servidor o contenedor en lugar del despliegue simulado.
+* Agregar un distintivo o *badge* con el estado del pipeline en este archivo `README.md`.
+* Incorporar nuevas pruebas unitarias y pruebas de integración.
+* Implementar el almacenamiento histórico de las lecturas generadas.
 
 ## Créditos
 
-Basado en el caso de estudio "AgroSmart Monitor" de la Guía de Referencia del Proyecto Integrador del curso *Herramientas de Desarrollo Profesional - TIC* (código 10000096SI), adaptado de Python a Java para fines de práctica de pipelines CI/CD.
+Proyecto basado en el caso de estudio AgroSmart Monitor de la Guía de Referencia del Proyecto Integrador del curso *Herramientas de Desarrollo Profesional - TIC* (código 10000096SI) y adaptado de Python a Java para la práctica de pipelines de CI/CD.
