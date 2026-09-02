@@ -280,12 +280,12 @@ def report_story():
           Spacer(1, 10),
           table([
               ["Paso", "Comando o accion", "Criterio de exito"],
-              ["Descargar codigo", "actions/checkout@v4", "Commit disponible en el runner."],
-              ["Preparar Java", "actions/setup-java@v4, Temurin 17, cache Maven", "JDK y dependencias preparados."],
+              ["Descargar codigo", "actions/checkout@v7", "Commit disponible en el runner."],
+              ["Preparar Java", "actions/setup-java@v5, Temurin 17, cache Maven", "JDK y dependencias preparados."],
               ["Pruebas", "mvn -B test", "Todas las pruebas pasan; si falla, el job termina."],
               ["Build", "mvn -B package -DskipTests", "target/agrosmart-monitor.jar existe."],
               ["Deploy simulado", "Copiar target/*.jar a staging/", "El JAR aparece en staging."],
-              ["Publicacion", "actions/upload-artifact@v4", "Artefacto agrosmart-monitor-jar disponible."],
+              ["Publicacion", "actions/upload-artifact@v6", "Artefacto agrosmart-monitor-jar disponible."],
           ], [3.5*cm, 7.2*cm, 5.7*cm]),
           P("4.1 Practicas DevOps demostradas", "h2"),
           bullets([
@@ -628,12 +628,12 @@ return ALERT;""", STYLES["code"]),
           PageBreak(),
           P("12. Pipeline GitHub Actions", "h1"),
           Preformatted("""push/main o pull_request/main
-  -> checkout@v4
-  -> setup-java@v4 (Temurin 17 + cache Maven)
+  -> checkout@v7
+  -> setup-java@v5 (Temurin 17 + cache Maven)
   -> mvn -B test
   -> mvn -B package -DskipTests
   -> copiar target/*.jar a staging/
-  -> upload-artifact@v4""", STYLES["code"]),
+  -> upload-artifact@v6""", STYLES["code"]),
           P("La ejecucion secuencial aplica fail-fast por defecto: si <b>mvn test</b> devuelve un codigo distinto de cero, los pasos normales posteriores se omiten. Los pasos internos Post pueden ejecutarse para limpiar recursos."),
           P("12.1 Como leer un fallo", "h2"),
           numbered([
