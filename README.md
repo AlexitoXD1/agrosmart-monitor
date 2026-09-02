@@ -98,6 +98,22 @@ En cada sesión se implementará una modificación, se realizará un `git push` 
 * Incorporar nuevas pruebas unitarias y pruebas de integración.
 * Implementar el almacenamiento histórico de las lecturas generadas.
 
+## Documentación entregable
+
+Los documentos académicos generados se encuentran en `output/pdf/`:
+
+* `01_informe_cumplimiento_TA1_AgroSmart_Monitor.pdf`: implementación, trazabilidad y evidencias verificables.
+* `02_investigacion_rutas_laborales_y_certificaciones_TIC.pdf`: rutas DevOps y Cloud Architect, tres certificaciones y requisitos.
+* `03_manual_usuario_y_desarrollador_AgroSmart_Monitor.pdf`: instalación, uso, arquitectura, pruebas, pipeline y mantenimiento.
+
+Las capturas reales de la ejecución fallida y de la ejecución correctiva están en `docs/evidencias/` y también se incluyen dentro del informe de cumplimiento.
+
+Para regenerarlos se necesita Python con ReportLab:
+
+```bash
+python3 tools/generate_pdf_deliverables.py
+```
+
 ## Créditos
 
 Proyecto basado en el caso de estudio AgroSmart Monitor de la Guía de Referencia del Proyecto Integrador del curso *Herramientas de Desarrollo Profesional - TIC* (código 10000096SI) y adaptado de Python a Java para la práctica de pipelines de CI/CD.
