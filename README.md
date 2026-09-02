@@ -108,12 +108,6 @@ Los documentos académicos generados se encuentran en `output/pdf/`:
 
 Las capturas reales de la ejecución fallida y de la ejecución correctiva están en `docs/evidencias/` y también se incluyen dentro del informe de cumplimiento.
 
-Para regenerarlos se necesita Python con ReportLab:
-
-```bash
-python3 tools/generate_pdf_deliverables.py
-```
-
 ## Créditos
 
-Proyecto basado en el caso de estudio AgroSmart Monitor de la Guía de Referencia del Proyecto Integrador del curso *Herramientas de Desarrollo Profesional - TIC* (código 10000096SI) y adaptado de Python a Java para la práctica de pipelines de CI/CD.
+Proyecto basado en el caso de estudio AgroSmart Monitor de la Guía de Referencia del Proyecto Integrador del curso *Herramientas de Desarrollo Profesional - TIC* (código 10000096SI) e implementado en Java para la práctica de pipelines de CI/CD.
