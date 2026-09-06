@@ -13,14 +13,16 @@ El componente de **IoT (Internet of Things - Internet de las Cosas)** se encuent
    * `WARNING`: temperatura mayor que 8 °C y menor o igual que 10 °C.
    * `ALERT`: temperatura mayor que 10 °C.
 3. Cuando una lectura obtiene el estado `ALERT`, genera automáticamente un reporte de texto en la carpeta `reports/`. Esta función representa una automatización básica de **RPA (Robotic Process Automation - Automatización Robótica de Procesos)**.
-4. Integra un pipeline de GitHub Actions definido en `.github/workflows/ci.yml`, que se activa mediante un `push` o un `pull request` sobre la rama `main`:
+4. Exporta las lecturas procesadas a un archivo CSV (`reports/lecturas_historico.csv`) para permitir análisis posterior en hojas de cálculo o herramientas BI.
+5. Procesa las lecturas mediante `SensorStatisticsCalculator` para calcular y mostrar un resumen estadístico (temperaturas y humedad promedios, mínimas, máximas y distribución por estados).
+6. Integra un pipeline de GitHub Actions definido en `.github/workflows/ci.yml`, que se activa mediante un `push` o un `pull request` sobre la rama `main`:
 
    * Descarga el código del repositorio mediante `checkout`.
    * Prepara el entorno de Java 17.
    * Ejecuta las pruebas automatizadas con `mvn test`.
    * Compila y empaqueta la aplicación con `mvn package`.
-   * Realiza un despliegue simulado copiando el archivo `.jar` a la carpeta `staging/`.
-   * Publica el archivo `.jar` como artefacto descargable de la ejecución.
+   * Realiza un despliegue simulado copiando el archivo `.jar` y metadatos a la carpeta `staging/`.
+   * Publica los artefactos como descargables de la ejecución.
 
 ## Estructura del proyecto
 
@@ -29,15 +31,18 @@ agrosmart-monitor/
 ├── .github/workflows/ci.yml        <- Pipeline de CI/CD
 ├── pom.xml                         <- Configuración de Maven
 ├── src/main/java/com/agrosmart/
-│   ├── Main.java                   <- Punto de entrada de la aplicación
-│   ├── TemperatureReading.java     <- Modelo de una lectura
-│   ├── SensorSimulator.java        <- Simulación del componente IoT
-│   ├── SensorStatus.java           <- Estados NORMAL, WARNING y ALERT
-│   ├── TemperatureClassifier.java  <- Regla de negocio
-│   └── AlertReportGenerator.java   <- Generación automática de reportes
+│   ├── Main.java                       <- Punto de entrada de la aplicación
+│   ├── TemperatureReading.java         <- Modelo de una lectura
+│   ├── SensorSimulator.java            <- Simulación del componente IoT
+│   ├── SensorStatus.java               <- Estados NORMAL, WARNING y ALERT
+│   ├── TemperatureClassifier.java      <- Regla de negocio
+│   ├── AlertReportGenerator.java       <- Generación automática de reportes
+│   ├── SensorStatisticsCalculator.java <- Calculadora de estadísticas agregadas
+│   └── CsvReportExporter.java          <- Exportador de lecturas a formato CSV
 └── src/test/java/com/agrosmart/
-    ├── TemperatureClassifierTest.java  <- Pruebas de la regla de negocio
-    └── SensorSimulatorTest.java        <- Pruebas del simulador
+    ├── TemperatureClassifierTest.java      <- Pruebas de la regla de negocio
+    ├── SensorSimulatorTest.java            <- Pruebas del simulador
+    └── SensorStatisticsCalculatorTest.java <- Pruebas del calculador de estadísticas
 ```
 
 ## Ejecución local del proyecto

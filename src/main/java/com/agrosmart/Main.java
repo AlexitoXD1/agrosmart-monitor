@@ -2,10 +2,13 @@ package com.agrosmart;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Punto de entrada del proyecto. Simula un ciclo corto de monitoreo:
- * genera lecturas, las clasifica y, si corresponde, genera una alerta.
+ * genera lecturas, las clasifica, genera alertas si corresponde,
+ * exporta el historial a CSV y muestra un resumen estadístico.
  */
 public class Main {
 
@@ -16,9 +19,12 @@ public class Main {
 
         SensorSimulator sensor = new SensorSimulator();
         AlertReportGenerator alertReportGenerator = new AlertReportGenerator();
+        CsvReportExporter csvExporter = new CsvReportExporter();
+        List<TemperatureReading> readings = new ArrayList<>();
 
         for (int i = 1; i <= READINGS_TO_SIMULATE; i++) {
             TemperatureReading reading = sensor.nextReading();
+            readings.add(reading);
             SensorStatus status = TemperatureClassifier.classify(reading.getTemperature());
 
             System.out.printf("Lectura %d/%d -> %s | Estado: %s%n",
@@ -32,6 +38,14 @@ public class Main {
             Thread.sleep(300);
         }
 
+        Path csvPath = csvExporter.exportToCsv(readings, "lecturas_historico.csv");
+        System.out.println("  -> Historial exportado a CSV: " + csvPath);
+
+        SensorStatisticsCalculator statsCalculator = new SensorStatisticsCalculator(readings);
+        System.out.println();
+        System.out.print(statsCalculator.generateSummaryReport());
+
         System.out.println("=== Fin de la simulacion ===");
     }
 }
+
