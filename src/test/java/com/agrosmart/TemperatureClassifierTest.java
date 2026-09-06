@@ -13,9 +13,7 @@ class TemperatureClassifierTest {
 
     @Test
     void debeClasificarComoNormalHasta8Grados() {
-        // [MODIFICACIÓN INTENCIONAL DE PRÁCTICA]: Cambio de SensorStatus.NORMAL a SensorStatus.ALERT
-        // Esto provocará un error en 'mvn test' y hará que el pipeline de GitHub Actions falle.
-        assertEquals(SensorStatus.ALERT, TemperatureClassifier.classify(6.0));
+        assertEquals(SensorStatus.NORMAL, TemperatureClassifier.classify(6.0));
         assertEquals(SensorStatus.NORMAL, TemperatureClassifier.classify(8.0));
     }
 
